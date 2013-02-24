@@ -1,0 +1,31 @@
+number: <%= number %>
+name: <%= name %>
+
+comments: |
+  <%= comments %>
+
+year: <%= year %>
+
+# These might be used if generating an output to be used as a blog post for example
+images:
+<% images.each do |image| %>
+  -
+    file: <%= image.file %>
+    alt: |
+      <%= image.alt %>
+<% end %>
+
+# Everything below is used in the RSS feed
+
+# Appears in iTunes description column on store podcast page
+subtitle: |
+  <%= subtitle %>
+
+# YYYY/MM/DD HH:MM format (UTC assumed)
+pubdate: <%= pubdate %>
+
+explicit: <%= explicit %>
+keywords:
+<% keywords.each do |keyword| %>
+  - <%= keyword %>
+<% end %>

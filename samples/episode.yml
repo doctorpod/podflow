@@ -1,0 +1,27 @@
+number: 0
+name: MyEpisode
+
+comments: |
+  MyComments
+
+year: 1824
+
+# These might be used if generating an output to be used as a blog post for example
+images:
+  -
+    file: MyFile
+    alt: |
+      MyAlt
+
+# Everything below is used in the RSS feed
+
+# Appears in iTunes description column on store podcast page
+subtitle: |
+  MySubtitle
+
+# YYYY/MM/DD HH:MM format (UTC assumed)
+pubdate: 1824/02/24 13:08
+
+explicit: false
+keywords:
+  - MyKeyword
