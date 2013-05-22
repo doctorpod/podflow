@@ -14,15 +14,15 @@ module Podflow
       end
     end
 
-    def to_yaml
-      template = ERB.new(template_str, nil, '<>')
+    def to_yaml(template_path = 'templates')
+      template = ERB.new(get_template_string(template_path), nil, '<>')
       template.result binding
     end
     
     private
     
-    def template_str
-      File.read(File.expand_path(File.join('..', '..', '..', 'templates',
+    def get_template_string(path)
+      File.read(File.expand_path(File.join('..', '..', '..', path,
         "#{self.class.to_s.split('::').last.downcase}.erb"), __FILE__))
     end
 

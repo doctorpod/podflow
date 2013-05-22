@@ -1,0 +1,10 @@
+    -
+      subject: <%= subject %>
+      
+      recipients:
+  <% recipients.each do |recipient| %>
+        - <%= recipient %>
+  <% end %>
+      
+      from: <%= from %>
+      template: <%= template %>

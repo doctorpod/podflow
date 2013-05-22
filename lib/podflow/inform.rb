@@ -1,5 +1,6 @@
 module Podflow
   class Inform
+    include Yamlable
     attr_reader :subject, :recipients, :from, :template
     
     def initialize(data = {})

@@ -6,31 +6,15 @@ media_uri: <%= media_uri %>
 
 uploads:
 <% uploads.each do |upload| %>
-  - 
-    name: <%= upload.name %>
-    host: <%= upload.host %>
-    path: <%= upload.path %>
-    user: <%= upload.user %>
-    pass: <%= upload.pass %>
+<%= upload.to_yaml %>
 <% end %>
-    
+
 views:
 <% views.each do |view| %>
-  -
-    name: <%= view.name %>
-    template: <%= view.template %>
+<%= view.to_yaml %>
 <% end %>
-    
+
 informs:
 <% informs.each do |inform| %>
-  -
-    subject: <%= inform.subject %>
-    
-    recipients:
-<% inform.recipients.each do |recipient| %>
-      - <%= recipient %>
-<% end %>
-    
-    from: <%= inform.from %>
-    template: <%= inform.template %>
+<%= inform.to_yaml %>
 <% end %>

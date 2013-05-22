@@ -1,7 +1,8 @@
 module Podflow
   class Episode
     include Yamlable
-    attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate, :explicit, :keywords
+    attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate,
+                :explicit, :keywords
   
     def initialize(data = {})
       @number = data['number'] || 0
@@ -13,6 +14,11 @@ module Podflow
       @pubdate = data['pubdate'] || Time.now.strftime("%Y/%m/%d %H:%M")
       @explicit = data['explicit'] || false
       @keywords = data['keywords'] || ['MyKeyword']
+    end
+    
+    def read_mp3(path)
+      puts "Episode: reading MP3 #{path}"
+      self
     end
   end
 end

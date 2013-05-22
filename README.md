@@ -42,11 +42,11 @@ The *series_config.yml* file has the following format:
 
 ## Setting up a podcast episode
 
-    $ podflow episode [-e number] [name]
+    $ podflow episode [-n number] [name]
 
-Creates an episode file for an MP3 file. If name is omitted the highest alphabetically sorted MP3 file is assumed (searches any folder named *media*, *mp3*, or *mp4* else the current folder). The resulting file is written to any folder named *episodes* else the current folder. The following values are pre-populated: *number:*, *year:* and *pubdate:* are based on the current time, and *explicit:* defaults to the value set in *series_config.yml*. If the MP3 file is already tagged, these values are used to pre-populate the corresponding values in the episode file. Existing episode files will not be overwritten.
+Creates an episode file for an MP3 file. If name is omitted the highest alphabetically sorted MP3 file is assumed (searches any folder named *media*, *mp3* else the current folder). The resulting file is written to any folder named *episodes* else the current folder. The following values are pre-populated: *number:*, *year:* and *pubdate:* are based on the current time, and *explicit:* defaults to the value set in *series_config.yml*. If the MP3 file is already tagged, these values are used to pre-populate the corresponding values in the episode file. Existing episode files will not be overwritten.
 
-The *-e number* option indicates the episode number. If omitted this is derived from the name if it begins with a number. If it can't be derived, 0 is assumed.
+The *-n number* option indicates the episode number. If omitted this is derived from the name if it begins with a number. If it can't be derived, 0 is assumed.
 
 Episode files have the following format:
 
@@ -70,11 +70,11 @@ Episode files have the following format:
 
     $ podflow deploy [-i] [episode-name]
     $ podflow tag [-i] [episode-name]
-    $ podflow upload [-i] [episode-name]
     $ podflow views [-i] [episode-name]
+    $ podflow upload [-i] [episode-name]
     $ podflow inform [-i] [episode-name]
 
-These commands perform tag, upload, text generation and inform steps on an episode. The *deploy* command performs all steps. If *episode-name* is omitted the highest alphabetically sorted episode file is assumed (searches any folder named *episodes* else the current folder). Which steps are performed are governed by the values set in the *series_config.yml* file. The interactive flag, *-i*, makes these commands prompt for confirmation before performing each step.
+These commands perform tag, upload, text generation (view) and inform steps on an episode. The *deploy* command performs all steps in the order specified above. If *episode-name* is omitted the highest alphabetically sorted episode file is assumed (searches any folder named *episodes* else the current folder). Which steps are performed are governed by the values set in the *series_config.yml* file. The interactive flag, *-i*, makes these commands prompt for confirmation before performing each step.
 
 
 ## Generating an RSS feed
@@ -99,6 +99,7 @@ Feed config files have the following format:
     webmaster:
     ownername:
     owneremail:
+    artwork1400:
     artwork600:
     artwork300:
     artwork144:
@@ -129,8 +130,8 @@ The *template:* values in the *series_config.yml* and episode files should speci
     series.name
     series.description
     
-    series.outputs.each do |output|
-      output.name
+    series.views.each do |view|
+      view.name
     end
     
     episode.number
@@ -150,7 +151,7 @@ The *template:* values in the *series_config.yml* and episode files should speci
 
 ## Images
 
-The *images: file:* values in the episode files should be a filename and extension and will be searched in an *images* folder, which must exist.
+The *images: file:* values in the episode files should be a filename and extension and will be searched in an *images* or *img* folder, one of which must exist.
 
 
 ## Contributing

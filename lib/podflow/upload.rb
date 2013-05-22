@@ -1,5 +1,6 @@
 module Podflow
   class Upload
+    include Yamlable
     attr_reader :name, :host, :path, :user, :pass
   
     def initialize(data = {})

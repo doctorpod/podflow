@@ -14,8 +14,8 @@ uploads:
     
 views:
   -
-    name: MyName
-    template: MyTemplateFile
+    name: MyView
+    template: my_view_template
     
 informs:
   -
