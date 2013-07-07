@@ -1,46 +1,19 @@
-require 'podflow/commands/series_command'
+require 'podflow/series'
 require 'helpers'
-require 'yaml'
-
-class FakeUpload
-  def initialize(data = {})
-  end
-end
-
-class FakeView
-  def initialize(data = {})
-  end
-
-  def render(bind, working_folder, stderr)
-    "fake view"
-  end
-end
-
-class FakeInform
-  def initialize(data = {})
-  end
-end
 
 module Podflow
-  module Commands
-    describe SeriesCommand do
-      before(:each) do
-        @stderr = double('Stderr').as_null_object
-        data = YAML.load_file(samples('series_config.yml'))
-        @series = Series.new(data, FakeUpload, FakeView, FakeInform)
+  describe Series do
+    describe "new instance" do
+      it "should render YAML" do
+        Series.new.to_yaml.should == File.read(samples('series_config.yml'))
       end
+    end
     
-      describe "rendering views" do
-        it "should render views" do
-          @series.render_views(binding, sandbox, @stderr, false).should == "fake view"
-        end
-      
-      
-        describe "interactive option" do
-          it "should prompt before each view" do
-            pending "Decide how to design testable interactiveness"
-          end
-        end
+    describe "from saved file" do
+      it "should render correct object" do
+        loaded = Series.load(samples('series_config.yml'))
+        loaded.artist.should == 'MyArtist'
+        loaded.uploads[0].name.should == 'MyName'
       end
     end
   end

@@ -1,29 +1,34 @@
-name: Underpants
-artist: Ned Kelly
-description: MyDescription
+name: |
+  MyName
+
+description: |
+  MyDescription
+
+artist: MyArtist
 artwork: MyArtwork.jpg
 media_uri: My.Media/URI/
 
 uploads:
-  - 
-    name: MyName
-    host: MyHost.com
-    path: My/Path
-    user: MyUser
-    pass: MyPassword
-    
+- name: MyName
+  host: MyHost.com
+  path: My/Path
+  user: MyUser
+  pass: MyPassword
+
+
 views:
-  -
-    name: MyView
-    template: my_view_template
-    
+- name: MyView
+  template: MyTemplateFile
+
+
 informs:
-  -
-    subject: MySubject
-    
-    recipients:
-      - him@here.com
-      - her@there.com
-    
-    from: My@From
-    template: MyTemplateFile
+- subject: |
+    MySubject
+
+  recipients:
+  - him@here.com
+  - her@there.com
+
+  from: My@From
+  template: MyTemplateFile
+

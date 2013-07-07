@@ -1,20 +1,41 @@
-name: <%= name %>
+name: |
+  <%= name %>
+
+description: |
+  <%= description %>
+
 artist: <%= artist %>
-description: <%= description %>
 artwork: <%= artwork %>
 media_uri: <%= media_uri %>
 
 uploads:
 <% uploads.each do |upload| %>
-<%= upload.to_yaml %>
+- name: <%= upload.name %>
+  host: <%= upload.host %>
+  path: <%= upload.path %>
+  user: <%= upload.user %>
+  pass: <%= upload.pass %>
+
 <% end %>
 
 views:
 <% views.each do |view| %>
-<%= view.to_yaml %>
+- name: <%= view.name %>
+  template: <%= view.template %>
+
 <% end %>
 
 informs:
 <% informs.each do |inform| %>
-<%= inform.to_yaml %>
+- subject: |
+    <%= inform.subject %>
+
+  recipients:
+<% inform.recipients.each do |recipient| %>
+  - <%= recipient %>
+<% end %>
+
+  from: <%= inform.from %>
+  template: <%= inform.template %>
+
 <% end %>

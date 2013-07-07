@@ -18,7 +18,7 @@ module Podflow
           f.write('4 plus <%= my_var %> is <%= 4 + my_var %>')
         end
       
-        @view.render(binding, sandbox, @stderr).should == "My View:\n---\n4 plus 5 is 9\n---"
+        @view.render(binding, sandbox, @stderr).should == "\nMy View\n--\n4 plus 5 is 9\n--"
       end
     end
     

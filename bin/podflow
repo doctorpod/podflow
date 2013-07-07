@@ -4,15 +4,21 @@ require 'gli'
 require 'podflow'
 include GLI::App
 
-name = 'Podcast workflow tools'
+name = 'Podcast workflow tasks'
 program_desc name
 version Podflow::VERSION
 
-desc 'Generate a common configuration file for a podcast series'
-command :series do |c|
+desc 'Generate a Rakefile for a podcast series'
+command :podify do |c|
   c.action do |global_options, options, args|
-    status = Podflow::Commands::SeriesCommand.new.perform
-    exit_now!(nil, status) if status > 0
+    path = "./Rakefile"
+    if File.exist?(path)
+      STDERR.puts "Rakefile already exists"
+      exit_now!(nil, 1)
+    else
+      File.open(path, "w") {|f| f.write("require 'podflow/tasks/series'\n")}
+      STDOUT.puts "#{path} written"
+    end
   end
 end
 

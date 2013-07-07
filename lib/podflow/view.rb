@@ -1,33 +1,26 @@
-require 'podflow/yamlable'
-
 module Podflow
   class View
-    include Yamlable
     attr_reader :name, :template
     
     def initialize(data = {})
       @name = data['name'] || 'MyView'
-      @template = (data['template'] || 'my_view_template')
+      @template = data['template'] || 'MyTemplateFile'
     end
     
-    def render(bind, working_folder, stderr)
-      if string = template_string(working_folder, stderr)
-        "\n#{name}\n--\n#{ERB.new(string).result(bind)}\n--"
-      else
-        false
-      end
+    def render(bind)
+      "\n#{name}\n--\n#{ERB.new(template_string).result(bind)}\n--"
     end
     
     private
     
-    def template_string(working_folder, stderr)
-      path = File.join(working_folder, 'templates', template + '.erb')
+    def template_string
+      path = File.join('./templates', template + '.erb')
       
       if File.exist?(path)
         File.read(path)
       else
-        stderr.puts("ERROR: No such template file: #{path}")
-        false
+        STDERR.puts("ERROR: No such template file: #{path}")
+        exit
       end
     end
   end

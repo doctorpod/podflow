@@ -16,6 +16,9 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+  gem.add_runtime_dependency "rake"
   gem.add_runtime_dependency "gli"
+  gem.add_runtime_dependency('taglib-ruby', '>= 0.1.1')
+  gem.add_runtime_dependency('ruby-mp3info', '>= 0.6.13')
   gem.add_development_dependency "rspec"
 end

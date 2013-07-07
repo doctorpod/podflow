@@ -30,15 +30,19 @@ module Podflow
       end
   
       describe "./episodes folder exists" do
+        pending
       end
   
       describe "missing series_config" do
+        pending
       end
   
       describe "missing episode" do
+        pending
       end
   
       describe "no episode specified" do
+        pending
       end
     end
   end

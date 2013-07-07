@@ -1,23 +1,57 @@
-require 'podflow/yamlable'
+require 'erb'
+require 'podflow/upload'
+require 'podflow/view'
+require 'podflow/inform'
 
 module Podflow
   class Series
-    include Yamlable
+    CONFIG_NAME = 'series_config.yml'
+    CONFIG_SEARCH_PATHS = ['config', '.']
     attr_reader :name, :artist, :description, :artwork, :media_uri, :uploads, :views, :informs
   
-    def initialize(data = {}, upload_factory = Upload, view_factory = View, inform_factory = Inform)
+    def initialize(data = {})
       @name = data['name'] || 'MyName'
       @artist = data['artist'] || 'MyArtist'
-      @description = data['description'] ? data['description'].chomp : 'MyDescription'
+      @description = data['description'] || 'MyDescription'
       @artwork = data['artwork'] || 'MyArtwork.jpg'
       @media_uri = data['media_uri'] || 'My.Media/URI/'
-      @uploads = data['uploads'] ? to_objects(upload_factory, data['uploads']) : [upload_factory.new]
-      @views = data['views'] ? to_objects(view_factory, data['views']) : [view_factory.new]
-      @informs = data['informs'] ? to_objects(inform_factory, data['informs']) : [inform_factory.new]
+      @uploads = to_objects(data['uploads'], Upload)
+      @views = to_objects(data['views'], View)
+      @informs = to_objects(data['informs'], Inform)
     end
     
-    def render_views(the_binding, working_folder, stderr, interactive)
-      views.map { |view| view.render(the_binding, working_folder, stderr) } .join
+    def self.config_path
+      PodUtils::find_file!(CONFIG_NAME, CONFIG_SEARCH_PATHS)
+    end
+    
+    def render_views(episode_name)
+      series = self
+      episode = Episode.highest_or_matching(episode_name)
+      views.map { |view| view.render(binding) } .join
+    end
+
+    def to_yaml(template_path = 'templates')
+      template = ERB.new(get_template_string(template_path), nil, '<>')
+      template.result binding
+    end
+    
+    def self.load(path = config_path)
+      data_hash = YAML.load(File.read(path))
+      new(data_hash)
+    end
+    
+    def self.write
+      PodUtils.write_unless_exists(new.to_yaml, CONFIG_NAME, CONFIG_SEARCH_PATHS)
+    end
+
+    private
+    
+    def get_template_string(path)
+      File.read(File.expand_path(File.join('..', '..', '..', path, "series.erb"), __FILE__))
+    end
+    
+    def to_objects(arr, klass)
+      arr ? arr.map {|e| klass.new(e)} : [klass.new]
     end
   end
 end
