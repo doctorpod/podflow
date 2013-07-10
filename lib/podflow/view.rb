@@ -1,3 +1,5 @@
+require 'podflow/pod_utils'
+
 module Podflow
   class View
     attr_reader :name, :template
@@ -7,21 +9,8 @@ module Podflow
       @template = data['template'] || 'MyTemplateFile'
     end
     
-    def render(bind)
-      "\n#{name}\n--\n#{ERB.new(template_string).result(bind)}\n--"
-    end
-    
-    private
-    
-    def template_string
-      path = File.join('./templates', template + '.erb')
-      
-      if File.exist?(path)
-        File.read(path)
-      else
-        STDERR.puts("ERROR: No such template file: #{path}")
-        exit
-      end
+    def render(series, episode)
+      "\n#{name}\n--\n#{ERB.new(PodUtils.local_template_string(template)).result(binding)}\n--"
     end
   end
 end

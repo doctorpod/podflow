@@ -16,45 +16,62 @@ module Podflow
       found = find_file(file_name, paths)
       
       if found.nil?
-        puts "ERROR: Cannot find '#{file_name}' in #{paths.join(' or ')}"
-        exit FAILURE
+        raise "Cannot find '#{file_name}' in #{paths.join(' or ')}"
       else
         found
       end
     end
     
-    def self.write_unless_exists(contents, file_name, write_paths)
+    def self.write_unless_exists(contents, file_name, write_paths, out = STDOUT, err = STDERR)
       write_paths.each do |write_path|
         if File.exist?(write_path)
           target = File.join(write_path, file_name)
 
           if File.exist?(target)
-            STDERR.puts "ERROR: #{target} already exists"
-            return FAILURE
+            out.puts "#{target} already exists"
+            return false
           else
             File.open(target, 'w') {|f| f.write(contents)}
-            STDOUT.puts "#{target} written"
-            warn_of_redundencies(file_name, write_paths)
-            return SUCCESS
+            out.puts "#{target} written"
+            warn_of_redundencies(file_name, write_paths, out)
+            return true
           end
         end
       end
 
-      STDERR.puts "ERROR: Cannot write #{file_name} - folder(s) not found: #{folder_paths.join(', ')}"
-      FAILURE
+      raise "Cannot write #{file_name} - folder(s) not found: #{folder_paths.join(', ')}"
     end
 
-    def self.warn_of_redundencies(file_name, search_paths)
+    def self.warn_of_redundencies(file_name, search_paths, out = STDOUT)
       default_exists = false
 
       search_paths.each do |path|
         search = File.join(path, file_name)
 
         if default_exists
-          STDOUT.puts "WARNING: #{search} is redundant" if File.exist?(search)
+          out.puts "WARNING: #{search} is redundant" if File.exist?(search)
         else
           default_exists = File.exist?(search)
         end
+      end
+    end
+    
+    def self.local_template_string(name)
+      path = File.join('./templates', name + '.erb')
+      
+      if File.exist?(path)
+        File.read(path)
+      else
+        raise "No such template file: #{path}"
+      end
+    end
+    
+    def self.with_error_handling
+      begin
+        yield
+      rescue Exception => e
+        STDERR.puts "ERROR: #{e.message}\n"
+        exit FAILURE
       end
     end
   end

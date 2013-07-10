@@ -1,5 +1,9 @@
+require 'podflow/template_yamling'
+require 'podflow/pod_utils'
+
 module Podflow
   class Episode
+    include TemplateYAMLing
     CONFIG_SEARCH_PATHS = ['episodes', '.']
     MEDIA_SEARCH_PATHS = ['media', 'mp3', '.']
     attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate,
@@ -27,22 +31,33 @@ module Podflow
     end
     
     def read_tags(path = media_path)
-      STDOUT.puts "Episode: reading tags from media #{path}"
+      STDOUT.puts "#{path} read"
       values = TagMP3.read_tags(path)
       load_data(values.inject({}) {|stringified, (k,v)| stringified[k.to_s] = v; stringified})
     end
     
-    def data_hash
-      {:track => number,
-       :name => name,
-       :album => 'TODO',
-       :comments => comments,
-       :year => year}
+    def series
+      @series ||= Series.load
     end
     
-    def write_tags(path = media_path)
-      STDOUT.puts "Episode: writing tags to media #{path}"
-      values = TagMP3.write_tags(path, data_hash)
+    def tag_hash
+      {:name => name,
+       :album => series.name,
+       :artist => series.artist, 
+       :comments => comments,
+       # :genre,
+       :year => year,
+       :track => number,
+       # :artwork,
+       :lyrics => comments}
+    end
+    
+    def write_tags(path = nil)
+      PodUtils.with_error_handling do
+        path ||= media_path
+        TagMP3.write_tags(path, tag_hash)
+        STDOUT.puts "#{path} tagged"
+      end
     end
     
     def self.generate_config_file(episode_name, number)
@@ -58,27 +73,28 @@ module Podflow
         PodUtils.write_unless_exists(episode.to_yaml, episode_name + '.yml', CONFIG_SEARCH_PATHS)
       else
         if greatest_mp3 = find_highest('mp3', MEDIA_SEARCH_PATHS)
-          read_tags(greatest_mp3)
-          PodUtils.write_unless_exists(to_yaml, File.basename(greatest_mp3, '.mp3') + '.yml', CONFIG_SEARCH_PATHS)
+          episode.read_tags(greatest_mp3)
+          PodUtils.write_unless_exists(episode.to_yaml, File.basename(greatest_mp3, '.mp3') + '.yml', CONFIG_SEARCH_PATHS)
         else
-          STDERR.puts "ERROR: Must specify an episode name as no MP3 files found from which to derive one"
-          exit
+          raise "Must specify an episode name as no MP3 files found from which to derive one"
         end
       end
     end
     
     def upload
-      puts "Pretending to upload - TODO"
+      PodUtils.with_error_handling do
+        series.uploads.each {|upload| upload.perform(media_path)}
+      end
     end
     
     def inform
-      puts "Preteding to inform - TODO"
+      PodUtils.with_error_handling { series.informs.each {|inform| inform.perform(series, self)} }
     end
     
     def self.find_highest(ext, paths)
       paths.each do |path|
         search_glob = File.join(path, "*.#{ext}")
-        found = Dir.glob(search_glob)
+        found = Dir.glob(search_glob).reject {|path| path =~ Regexp.new(Series::CONFIG_NAME)}
         return found.sort.last if found.any?
       end
 
@@ -89,8 +105,7 @@ module Podflow
       found = find_highest(ext, paths)
 
       if found.nil?
-        STDERR.puts "ERROR: Cannot find any episodes in #{paths.join(', ')}"
-        exit
+        raise "Cannot find any episodes in #{paths.join(', ')}"
       else
         found
       end
@@ -98,7 +113,7 @@ module Podflow
     
     def self.highest_or_matching(name)
       path = name.nil? ? find_highest!(:yml, CONFIG_SEARCH_PATHS) : PodUtils::find_file!("#{name}.yml", CONFIG_SEARCH_PATHS)
-      new(YAML.load(path), path)
+      new(YAML.load(File.read(path)), path)
     end
   end
 end

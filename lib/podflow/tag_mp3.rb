@@ -28,7 +28,7 @@ module Podflow
       raise "No such MP3 file #{file}" unless File.exist?(file)
       known_tags = [:name, :album, :artist, :comments, :genre, :year, :track, :artwork, :lyrics]
       values.each_key { |key| raise "Unknown tag #{key}" unless known_tags.include?(key) }
-    
+
       Mp3Info.open(file) do |mp3|
         mp3.tag.title = values[:name] unless values[:name].nil?
         mp3.tag.album = values[:album] unless values[:album].nil?
