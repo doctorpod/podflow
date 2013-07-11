@@ -1,5 +1,3 @@
-require 'podflow/yamlable'
-require 'podflow/image'
 require 'podflow/episode'
 require 'helpers'
 
@@ -11,7 +9,7 @@ module Podflow
     
     describe "loading a YAML episode file" do
       before(:each) do
-        @episode = Episode.load(File.read(samples('episode.yml')))
+        @episode = Episode.new(YAML.load(File.read(samples('episode.yml'))))
       end
       
       it "should be an Episode" do
@@ -23,7 +21,7 @@ module Podflow
       end
       
       it "should have correct pubdate" do
-        @episode.pubdate.should == '1824/02/24 13:08'
+        @episode.pubdate.should == '1824/06/01 12:00'
       end
       
       it "should convert back to original YAML file" do

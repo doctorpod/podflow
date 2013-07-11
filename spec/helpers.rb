@@ -17,7 +17,7 @@ end
 
 class String
   def blank_times
-    self.sub(/\d\d\d\d\/\d\d\/\d\d \d\d:\d\d/,'').sub(/\d\d\d\d/,'')
+    self.sub(/\d\d\d\d\/\d\d\/\d\d \d\d:\d\d/,'0000/00/00 00:00').sub(/\d\d\d\d/,'0000')
   end
 end
 

@@ -15,11 +15,9 @@ uploads:
   user: MyUser
   pass: MyPassword
 
-
 views:
 - name: MyView
   template: MyTemplateFile
-
 
 informs:
 - subject: |
@@ -29,6 +27,6 @@ informs:
   - him@here.com
   - her@there.com
 
-  from: My@From
-  template: MyTemplateFile
+  from: me@from.com
+  template: MyInformTemplateFile
 

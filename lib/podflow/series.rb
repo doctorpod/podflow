@@ -1,13 +1,11 @@
-require 'erb'
+require 'podflow/formatted_config_file'
 require 'podflow/upload'
 require 'podflow/view'
 require 'podflow/inform'
-require 'podflow/template_yamling'
 require 'podflow/pod_utils'
 
 module Podflow
-  class Series
-    include TemplateYAMLing
+  class Series < FormattedConfigFile
     CONFIG_NAME = 'series_config.yml'
     CONFIG_SEARCH_PATHS = ['config', '.']
     attr_reader :name, :artist, :description, :artwork, :media_uri, :uploads, :views, :informs

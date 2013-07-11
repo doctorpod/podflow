@@ -17,14 +17,12 @@ uploads:
   pass: <%= upload.pass %>
 
 <% end %>
-
 views:
 <% views.each do |view| %>
 - name: <%= view.name %>
   template: <%= view.template %>
 
 <% end %>
-
 informs:
 <% informs.each do |inform| %>
 - subject: |

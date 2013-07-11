@@ -1,5 +1,7 @@
+require 'erb'
+
 module Podflow
-  module TemplateYAMLing
+  class FormattedConfigFile
     def to_yaml(template_path = 'templates')
       template = ERB.new(get_template_string(template_path), nil, '<>')
       template.result binding

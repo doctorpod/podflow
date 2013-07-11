@@ -1,9 +1,9 @@
-require 'podflow/template_yamling'
+require 'podflow/formatted_config_file'
 require 'podflow/pod_utils'
+require 'podflow/image'
 
 module Podflow
-  class Episode
-    include TemplateYAMLing
+  class Episode < FormattedConfigFile
     CONFIG_SEARCH_PATHS = ['episodes', '.']
     MEDIA_SEARCH_PATHS = ['media', 'mp3', '.']
     attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate,
@@ -16,10 +16,10 @@ module Podflow
     
     def load_data(data)
       @number = data['number'] || data['track'] || 0
-      @name = data['name'] || 'MyEpisode'
+      @name = data['name'] ? data['name'].chomp : 'MyEpisode'
       @comments = data['comments'] ? data['comments'].chomp : 'MyComments'
       @year = data['year'] || Time.now.year
-      @images = data['images'] ? to_objects(Image, data['images']) : [Image.new]
+      @images = to_objects(Image, data['images'])
       @subtitle = data['subtitle'] ? data['subtitle'].chomp : 'MySubtitle'
       @pubdate = data['pubdate'] || Time.now.strftime("%Y/%m/%d %H:%M")
       @explicit = data['explicit'] || false
@@ -105,7 +105,7 @@ module Podflow
       found = find_highest(ext, paths)
 
       if found.nil?
-        raise "Cannot find any episodes in #{paths.join(', ')}"
+        raise "Cannot find any episodes in #{paths.join(' or ')}"
       else
         found
       end
