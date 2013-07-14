@@ -2,6 +2,16 @@ require 'erb'
 
 module Podflow
   class FormattedConfigFile
+    def self.has_setting(symbol, default)
+      @settings ||= {}
+      @settings[symbol] = default
+    end
+    
+    def self.has_many(symbol, klass)
+      @children ||= {}
+      @children[symbol] = [klass.new]
+    end
+    
     def to_yaml(template_path = 'templates')
       template = ERB.new(get_template_string(template_path), nil, '<>')
       template.result binding

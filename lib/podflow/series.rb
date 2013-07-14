@@ -6,6 +6,13 @@ require 'podflow/pod_utils'
 
 module Podflow
   class Series < FormattedConfigFile
+    has_setting :name, "MyName"
+    has_setting :artist, "MyArtist"
+    
+    has_many :uploads, Upload
+    has_many :views, View
+    has_many :informs, Inform
+    
     CONFIG_NAME = 'series_config.yml'
     CONFIG_SEARCH_PATHS = ['config', '.']
     attr_reader :name, :artist, :description, :artwork, :media_uri, :uploads, :views, :informs
