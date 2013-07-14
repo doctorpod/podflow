@@ -2,13 +2,14 @@ require 'erb'
 
 module Podflow
   class FormattedConfigFile
-    def to_yaml(template_path = 'templates')
-      template = ERB.new(get_template_string(template_path), nil, '<>')
+    def to_yaml(tmpl_path = template_path)
+      template = ERB.new(File.read(tmpl_path), nil, '<>')
       template.result binding
     end
   
-    def get_template_string(path)
-      File.read(File.expand_path(File.join('..', '..', '..', path, "#{template_name}.erb"), __FILE__))
+    # We don't expect this to fail! The template is part of this gem.
+    def template_path
+      File.expand_path(File.join('..', '..', '..', 'templates', "#{template_name}.erb"), __FILE__)
     end
     
     def template_name
@@ -16,7 +17,7 @@ module Podflow
     end
     
     def to_objects(klass, data_array)
-      data_array ? data_array.map {|data| klass.new(data)} : [klass.new]
+      data_array ? data_array.map {|data| klass.new(data)} : []
     end
   end
 end 

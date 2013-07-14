@@ -16,57 +16,10 @@ command :podify do |c|
       STDERR.puts "Rakefile already exists"
       exit_now!(nil, 1)
     else
-      File.open(path, "w") {|f| f.write("require 'podflow/tasks/series'\n")}
+      File.open(path, "w") {|f| f.write("require 'rubygems'\nrequire 'podflow/tasks/series'\n")}
       STDOUT.puts "#{path} written"
     end
   end
-end
-
-desc 'Create an episode file for an MP3 file'
-arg_name '[episode-name]'
-command :episode do |c|
-  c.flag [:n], :default_value => nil, :arg_name => 'episode-number',
-    :desc => 'Explicitly set the episode number'
-  
-  c.action do |global_options, options, args|
-    status = Podflow::Commands::EpisodeCommand.new.perform(args, Podflow::Episode, options)
-    exit_now!(nil, status) if status > 0
-  end
-end
-
-desc "Tag, upload, generate views, inform"
-arg_name '[episode-name]'
-command :deploy do |c|
-  c.desc 'Confirm before each step'
-  c.switch [:i, :interactive]
-end
-
-desc "Tag episode"
-arg_name '[episode-name]'
-command :tag do |c|
-end
-
-desc "Upload episode"
-arg_name '[episode-name]'
-command :upload do |c|
-end
-
-desc "Generate text views for episode"
-arg_name '[episode-name]'
-command :views do |c|
-  c.action do |global_options, options, args|
-    status = Podflow::Commands::ViewsCommand.new.perform(args.first, options)
-    exit_now!(nil, status) if status > 0
-  end
-end
-
-desc "Generate messages for episode"
-arg_name '[episode-name]'
-command :inform do |c|
-end
-
-desc "Generate RSS feed"
-command :feed do |c|
 end
 
 exit run(ARGV)

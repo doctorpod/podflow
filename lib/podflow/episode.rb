@@ -9,21 +9,34 @@ module Podflow
     attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate,
                 :explicit, :keywords, :config_path
   
-    def initialize(data = {}, config_path = nil)
-      load_data(data)
+    def initialize(data = nil, config_path = nil)
+      if data.nil?
+        @number = 0
+        @name = 'MyEpisode'
+        @comments = 'MyComments'
+        @year = Time.now.year
+        @images = [Image.new]
+        @subtitle = 'MySubtitle'
+        @pubdate = Time.now.strftime("%Y/%m/%d %H:%M")
+        @explicit = false
+        @keywords = ['MyKeyword']
+      else
+        load_data(data)
+      end
+      
       @config_path = config_path
     end
     
     def load_data(data)
-      @number = data['number'] || data['track'] || 0
-      @name = data['name'] ? data['name'].chomp : 'MyEpisode'
-      @comments = data['comments'] ? data['comments'].chomp : 'MyComments'
-      @year = data['year'] || Time.now.year
+      @number = data['number'] || data['track']
+      @name = data['name'].chomp
+      @comments = data['comments'].chomp
+      @year = data['year']
       @images = to_objects(Image, data['images'])
-      @subtitle = data['subtitle'] ? data['subtitle'].chomp : 'MySubtitle'
-      @pubdate = data['pubdate'] || Time.now.strftime("%Y/%m/%d %H:%M")
-      @explicit = data['explicit'] || false
-      @keywords = data['keywords'] || ['MyKeyword']
+      @subtitle = data['subtitle'].chomp
+      @pubdate = data['pubdate']
+      @explicit = data['explicit']
+      @keywords = data['keywords']
     end
     
     def media_path
@@ -64,7 +77,7 @@ module Podflow
       episode = new
 
       if episode_name
-        @number = number || episode_name.to_i
+        @number = number || episode_name.gsub(/[a-zA-Z]/,'').to_i
 
         if matching_mp3 = PodUtils.find_file("#{episode_name}.mp3", MEDIA_SEARCH_PATHS)
           read_tags(matching_mp3)
@@ -84,6 +97,14 @@ module Podflow
     def upload
       PodUtils.with_error_handling do
         series.uploads.each {|upload| upload.perform(media_path)}
+      end
+    end
+    
+    def upload_images
+      PodUtils.with_error_handling do
+        series.uploads.each do |upload|
+          images.each {|image| upload.perform(image.path)}
+        end
       end
     end
     

@@ -10,12 +10,27 @@ module Podflow
     CONFIG_SEARCH_PATHS = ['config', '.']
     attr_reader :name, :artist, :description, :artwork, :media_uri, :uploads, :views, :informs
   
-    def initialize(data = {})
-      @name = data['name'] || 'MyName'
-      @artist = data['artist'] || 'MyArtist'
-      @description = data['description'] || 'MyDescription'
-      @artwork = data['artwork'] || 'MyArtwork.jpg'
-      @media_uri = data['media_uri'] || 'My.Media/URI/'
+    def initialize(data = nil)
+      if data.nil?
+        @name = 'MyName'
+        @artist = 'MyArtist'
+        @description = 'MyDescription'
+        @artwork = 'MyArtwork.jpg'
+        @media_uri = 'My.Media/URI/'
+        @uploads = [Upload.new]
+        @views = [View.new]
+        @informs = [Inform.new]
+      else
+        load_data(data)
+      end
+    end
+    
+    def load_data(data)
+      @name = data['name']
+      @artist = data['artist']
+      @description = data['description']
+      @artwork = data['artwork']
+      @media_uri = data['media_uri']
       @uploads = to_objects(Upload, data['uploads'])
       @views = to_objects(View, data['views'])
       @informs = to_objects(Inform, data['informs'])
@@ -32,6 +47,7 @@ module Podflow
       end
     end
 
+    # Load from an existing config file
     def self.load(path = config_path)
       data_hash = YAML.load(File.read(path))
       new(data_hash)
