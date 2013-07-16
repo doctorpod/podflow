@@ -30,8 +30,8 @@ module Podflow
     end
     
     def read_tags(path = media_path)
-      STDOUT.puts "#{path} read"
       load_data(TagMP3.read_tags(path))
+      STDOUT.puts "#{path} read"
     end
     
     def series

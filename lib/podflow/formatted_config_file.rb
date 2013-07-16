@@ -62,7 +62,7 @@ module Podflow
             end
           end
         else
-          raise "No such setting: #{key}"
+          STDERR.puts "WARNING: No such setting '#{key}' - ignoring"
         end
       end
     end
