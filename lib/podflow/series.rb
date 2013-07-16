@@ -8,28 +8,25 @@ module Podflow
   class Series < FormattedConfigFile
     has_setting :name, "MyName"
     has_setting :artist, "MyArtist"
+    has_setting :description, 'MyDescription'
+    has_setting :artwork, 'MyArtwork.jpg'
+    has_setting :media_uri, 'My.Media/URI/'
+    has_setting :genre, 'Podcast'
     
-    has_many :uploads, Upload
-    has_many :views, View
-    has_many :informs, Inform
+    has_children :uploads, Upload
+    has_children :views, View
+    has_children :informs, Inform
     
     CONFIG_NAME = 'series_config.yml'
     CONFIG_SEARCH_PATHS = ['config', '.']
-    attr_reader :name, :artist, :description, :artwork, :media_uri, :uploads, :views, :informs
+    ARTWORK_SEARCH_PATHS = ['images', 'img']
   
-    def initialize(data = {})
-      @name = data['name'] || 'MyName'
-      @artist = data['artist'] || 'MyArtist'
-      @description = data['description'] || 'MyDescription'
-      @artwork = data['artwork'] || 'MyArtwork.jpg'
-      @media_uri = data['media_uri'] || 'My.Media/URI/'
-      @uploads = to_objects(Upload, data['uploads'])
-      @views = to_objects(View, data['views'])
-      @informs = to_objects(Inform, data['informs'])
-    end
-    
     def self.config_path
       PodUtils::find_file!(CONFIG_NAME, CONFIG_SEARCH_PATHS)
+    end
+    
+    def artwork_path
+      PodUtils::find_file!(artwork, ARTWORK_SEARCH_PATHS)
     end
     
     def render_views(episode_name)
@@ -39,9 +36,9 @@ module Podflow
       end
     end
 
+    # Load from an existing config file
     def self.load(path = config_path)
-      data_hash = YAML.load(File.read(path))
-      new(data_hash)
+      new YAML.load(File.read(path))
     end
     
     def self.write

@@ -29,7 +29,7 @@ describe "Tasks" do
       system("cd #{sandbox} && rake config && rake episode NAME=flange")
       system "cp #{samples('MyTemplateFile.erb')} #{sandbox('templates')}"
       output = `cd #{sandbox} && rake views`
-      output.should == "\nMyView\n--\nseries: MyName\n, name: MyEpisode, year: 2013\n--\n"
+      output.should == "\nMyView\n--\nseries: MyName, name: MyEpisode, year: 2013\n--\n"
     end
   end
 end

@@ -4,26 +4,25 @@ require 'podflow/image'
 
 module Podflow
   class Episode < FormattedConfigFile
+    attr_reader :config_path
+    
+    has_setting :number, 0
+    has_setting :name, 'MyEpisode'
+    has_setting :comments, 'MyComments'
+    has_setting :year, Time.now.year
+    has_setting :subtitle, 'MySubtitle'
+    has_setting :pubdate, Time.now.strftime("%Y/%m/%d %H:%M")
+    has_setting :explicit, false
+    has_setting :keywords, ['MyKeyword']
+    
+    has_children :images, Image
+    
     CONFIG_SEARCH_PATHS = ['episodes', '.']
     MEDIA_SEARCH_PATHS = ['media', 'mp3', '.']
-    attr_reader :number, :name, :comments, :year, :images, :subtitle, :pubdate,
-                :explicit, :keywords, :config_path
-  
-    def initialize(data = {}, config_path = nil)
-      load_data(data)
-      @config_path = config_path
-    end
     
-    def load_data(data)
-      @number = data['number'] || data['track'] || 0
-      @name = data['name'] ? data['name'].chomp : 'MyEpisode'
-      @comments = data['comments'] ? data['comments'].chomp : 'MyComments'
-      @year = data['year'] || Time.now.year
-      @images = to_objects(Image, data['images'])
-      @subtitle = data['subtitle'] ? data['subtitle'].chomp : 'MySubtitle'
-      @pubdate = data['pubdate'] || Time.now.strftime("%Y/%m/%d %H:%M")
-      @explicit = data['explicit'] || false
-      @keywords = data['keywords'] || ['MyKeyword']
+    def initialize(data = nil, config_path = nil)
+      @config_path = config_path
+      super(data)
     end
     
     def media_path
@@ -32,8 +31,7 @@ module Podflow
     
     def read_tags(path = media_path)
       STDOUT.puts "#{path} read"
-      values = TagMP3.read_tags(path)
-      load_data(values.inject({}) {|stringified, (k,v)| stringified[k.to_s] = v; stringified})
+      load_data(TagMP3.read_tags(path))
     end
     
     def series
@@ -45,10 +43,9 @@ module Podflow
        :album => series.name,
        :artist => series.artist, 
        :comments => comments,
-       # :genre,
+       :genre => series.genre,
        :year => year,
        :track => number,
-       # :artwork,
        :lyrics => comments}
     end
     
@@ -56,6 +53,7 @@ module Podflow
       PodUtils.with_error_handling do
         path ||= media_path
         TagMP3.write_tags(path, tag_hash)
+        TagMP3.write_artwork(path, series.artwork_path)
         STDOUT.puts "#{path} tagged"
       end
     end
@@ -64,7 +62,7 @@ module Podflow
       episode = new
 
       if episode_name
-        @number = number || episode_name.to_i
+        @number = number || episode_name.gsub(/[a-zA-Z]/,'').to_i
 
         if matching_mp3 = PodUtils.find_file("#{episode_name}.mp3", MEDIA_SEARCH_PATHS)
           read_tags(matching_mp3)
@@ -84,6 +82,14 @@ module Podflow
     def upload
       PodUtils.with_error_handling do
         series.uploads.each {|upload| upload.perform(media_path)}
+      end
+    end
+    
+    def upload_images
+      PodUtils.with_error_handling do
+        series.uploads.each do |upload|
+          images.each {|image| upload.perform(image.path)}
+        end
       end
     end
     
@@ -112,7 +118,12 @@ module Podflow
     end
     
     def self.highest_or_matching(name)
-      path = name.nil? ? find_highest!(:yml, CONFIG_SEARCH_PATHS) : PodUtils::find_file!("#{name}.yml", CONFIG_SEARCH_PATHS)
+      path = if name.nil?
+               find_highest!(:yml, CONFIG_SEARCH_PATHS)
+             else
+               PodUtils::find_file!("#{name}.yml", CONFIG_SEARCH_PATHS)
+             end
+             
       new(YAML.load(File.read(path)), path)
     end
   end

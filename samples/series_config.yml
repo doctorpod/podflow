@@ -5,6 +5,7 @@ description: |
   MyDescription
 
 artist: MyArtist
+genre: Podcast
 artwork: MyArtwork.jpg
 media_uri: My.Media/URI/
 

@@ -9,8 +9,8 @@ module Podflow
       @template = data['template'] || 'MyTemplateFile'
     end
     
-    def render(series, episode)
-      "\n#{name}\n--\n#{ERB.new(PodUtils.local_template_string(template)).result(binding)}\n--"
+    def render(series, episode, tmplt = PodUtils.local_template_string(template))
+      "\n#{name}\n--\n#{ERB.new(tmplt).result(binding)}\n--"
     end
   end
 end
