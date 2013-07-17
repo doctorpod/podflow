@@ -15,6 +15,14 @@ def set_sandbox
   system "rm -fr #{sandbox} && mkdir #{sandbox}"
 end
 
+def copy_sample_to_sandbox(sample_path, sandbox_path = '')
+  system "cp #{samples(sample_path)} #{sandbox(sandbox_path)}"
+end
+
+def in_sandbox(*path_components)
+  Dir.chdir(sandbox(path_components)) { yield }
+end
+
 class String
   def blank_times
     self.sub(/\d\d\d\d\/\d\d\/\d\d \d\d:\d\d/,'0000/00/00 00:00').sub(/\d\d\d\d/,'0000')

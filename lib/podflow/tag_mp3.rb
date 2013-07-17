@@ -50,13 +50,13 @@ module Podflow
       raise "No such MP3 file #{file}" unless File.exist?(file)
       values = {}
       Mp3Info.open(file) do |mp3|
-        values[:name]     = mp3.tag.title unless mp3.tag.title.nil?
-        values[:album]    = mp3.tag.album unless mp3.tag.album.nil?
-        values[:artist]   = mp3.tag.artist unless mp3.tag.artist.nil?
-        values[:comments] = mp3.tag.comments unless mp3.tag.comments.nil?
-        values[:lyrics]   = mp3.tag2.USLT.sub("\000eng\000",'') unless mp3.tag2.USLT.nil?
-        values[:genre]    = mp3.tag.genre_s unless mp3.tag.genre_s.nil?
-        values[:track]    = mp3.tag.tracknum unless mp3.tag.tracknum.nil?
+        values[:name]     = mp3.tag.title.chomp unless mp3.tag.title.nil?
+        values[:album]    = mp3.tag.album.chomp unless mp3.tag.album.nil?
+        values[:artist]   = mp3.tag.artist.chomp unless mp3.tag.artist.nil?
+        values[:comments] = mp3.tag.comments.chomp unless mp3.tag.comments.nil?
+        values[:lyrics]   = mp3.tag2.USLT.sub("\000eng\000",'').chomp unless mp3.tag2.USLT.nil?
+        values[:genre]    = mp3.tag.genre_s.chomp unless mp3.tag.genre_s.nil?
+        values[:number]   = mp3.tag.tracknum unless mp3.tag.tracknum.nil?
 
         unless mp3.tag.year.nil? && mp3.tag1.year.nil? && mp3.tag2.TYER.nil? && mp3.tag2.TDRC.nil?
           values[:year] = (mp3.tag.year || mp3.tag1.year || mp3.tag2.TYER || mp3.tag2.TDRC).to_i

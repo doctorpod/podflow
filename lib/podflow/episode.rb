@@ -1,6 +1,7 @@
-require 'podflow/formatted_config_file'
+require 'podflow/series'
 require 'podflow/pod_utils'
 require 'podflow/image'
+require 'podflow/tag_mp3'
 
 module Podflow
   class Episode < FormattedConfigFile
@@ -30,8 +31,12 @@ module Podflow
     end
     
     def read_tags(path = media_path)
-      load_data(TagMP3.read_tags(path))
+      load_data(episode_keys(TagMP3.read_tags(path)))
       STDOUT.puts "#{path} read"
+    end
+    
+    def episode_keys(data_hash)
+      data_hash.select {|key, val| [:number, :name, :comments, :year].include?(key)} 
     end
     
     def series
@@ -58,24 +63,28 @@ module Podflow
       end
     end
     
-    def self.generate_config_file(episode_name, number)
+    def self.generate_config_file(name, number)
       episode = new
+      name ? generate_from_name(episode, name, number) : generate_from_mp3(episode, number)
+    end
+    
+    def self.generate_from_name(episode, name, number)
+      episode.number = number || name.gsub(/[a-zA-Z]/,'').to_i
 
-      if episode_name
-        @number = number || episode_name.gsub(/[a-zA-Z]/,'').to_i
+      if matching_mp3 = PodUtils.find_file("#{name}.mp3", MEDIA_SEARCH_PATHS)
+        episode.read_tags(matching_mp3)
+      end
 
-        if matching_mp3 = PodUtils.find_file("#{episode_name}.mp3", MEDIA_SEARCH_PATHS)
-          read_tags(matching_mp3)
-        end
-
-        PodUtils.write_unless_exists(episode.to_yaml, episode_name + '.yml', CONFIG_SEARCH_PATHS)
+      PodUtils.write_unless_exists(episode.to_yaml, "#{name}.yml", CONFIG_SEARCH_PATHS)
+    end
+    
+    def self.generate_from_mp3(episode, number)
+      if greatest_mp3 = find_highest('mp3', MEDIA_SEARCH_PATHS)
+        episode.read_tags(greatest_mp3)
+        episode.number = number if number
+        PodUtils.write_unless_exists(episode.to_yaml, "#{File.basename(greatest_mp3,'.mp3')}.yml", CONFIG_SEARCH_PATHS)
       else
-        if greatest_mp3 = find_highest('mp3', MEDIA_SEARCH_PATHS)
-          episode.read_tags(greatest_mp3)
-          PodUtils.write_unless_exists(episode.to_yaml, File.basename(greatest_mp3, '.mp3') + '.yml', CONFIG_SEARCH_PATHS)
-        else
-          raise "Must specify an episode name as no MP3 files found from which to derive one"
-        end
+        raise "Must specify an episode name as no MP3 files found from which to derive one"
       end
     end
     
