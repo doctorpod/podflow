@@ -7,7 +7,7 @@ description: |
 artist: MyArtist
 genre: Podcast
 artwork: MyArtwork.jpg
-media_uri: My.Media/URI/
+media_uri: http://my.media/uri  # Include protocol. Omit trailing slash.
 
 uploads:
 - name: MyName
@@ -28,6 +28,8 @@ informs:
   - him@here.com
   - her@there.com
 
+  recipient_salutation: TheirName
   from: me@from.com
+  from_salutation: MyName
   template: MyInformTemplateFile
 

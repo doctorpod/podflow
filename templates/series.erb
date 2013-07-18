@@ -7,7 +7,7 @@ description: |
 artist: <%= artist %>
 genre: <%= genre %>
 artwork: <%= artwork %>
-media_uri: <%= media_uri %>
+media_uri: <%= media_uri %>  # Include protocol. Omit trailing slash.
 
 uploads:
 <% uploads.each do |upload| %>
@@ -34,7 +34,9 @@ informs:
   - <%= recipient %>
 <% end %>
 
+  recipient_salutation: <%= inform.recipient_salutation %>
   from: <%= inform.from %>
+  from_salutation: <%= inform.from_salutation %>
   template: <%= inform.template %>
 
 <% end %>

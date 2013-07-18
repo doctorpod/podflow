@@ -3,14 +3,17 @@ require 'podflow/pod_utils'
 
 module Podflow
   class Inform
-    attr_reader :subject, :recipients, :from, :template, :additional_text
+    attr_reader :subject, :recipients, :recipient_salutation, :from, :from_salutation, :template,
+                :additional_text
     
     def initialize(data = {})
-      @subject         = data['subject'] || 'MySubject'
-      @recipients      = data['recipients'] || ['him@here.com', 'her@there.com']
-      @from            = data['from'] || 'me@from.com'
-      @template        = data['template'] || 'MyInformTemplateFile'
-      @additional_text = ''
+      @subject              = data['subject'] || 'MySubject'
+      @recipients           = data['recipients'] || ['him@here.com', 'her@there.com']
+      @recipient_salutation = data['recipient_salutation'] || 'TheirName'
+      @from                 = data['from'] || 'me@from.com'
+      @from_salutation      = data['from_salutation'] || 'MyName'
+      @template             = data['template'] || 'MyInformTemplateFile'
+      @additional_text      = ''
     end
     
     def generate_mail(series, episode)

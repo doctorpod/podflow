@@ -10,7 +10,7 @@ module Podflow
     has_setting :artist, "MyArtist"
     has_setting :description, 'MyDescription'
     has_setting :artwork, 'MyArtwork.jpg'
-    has_setting :media_uri, 'My.Media/URI/'
+    has_setting :media_uri, 'http://my.media/uri'
     has_setting :genre, 'Podcast'
     
     has_children :uploads, Upload

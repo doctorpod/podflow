@@ -26,8 +26,12 @@ module Podflow
       super(data)
     end
     
+    def media_file_name
+      "#{File.basename(config_path, '.yml')}.mp3"
+    end
+    
     def media_path
-      PodUtils::find_file!("#{File.basename(config_path, '.yml')}.mp3", MEDIA_SEARCH_PATHS)
+      PodUtils::find_file!(media_file_name, MEDIA_SEARCH_PATHS)
     end
     
     def read_tags(path = media_path)
