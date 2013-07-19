@@ -98,23 +98,35 @@ Sends emails for named feed. NAME must be supplied.
 
 ## Templates
 
-The *template:* values in the *series_config.yml* and episode files should specify the name of an ERB template file without the extension. They will be searched for in a *templates* folder which must exist, and are expected to have an *.erb* extension. Podflow makes two objects available to templates in the *series_config.yml* file: *series* and *episode*, and a *feed* object available to templates in feed config files. The attributes of these objects are a direct match to the corresponding YAML files, including nested objects. Examples of valid expressions would be:
+The *template:* values in the *series_config.yml* and episode files should specify the name of an ERB template file without the extension. They will be searched for in a *templates* folder which must exist, and are expected to have an *.erb* extension. Podflow makes two objects available to templates in the *series_config.yml* file: *series* and *episode*, and a *feed* object available to templates in feed config files. The attributes of these objects are a direct match to the corresponding YAML files, including nested objects. Valid attributes are:
 
     series.name
     series.description
-    
-    series.views.each do |view|
-      view.name
-    end
+    series.artist
+    series.genre
+    series.artwork
+    series.media_uri
     
     episode.number
-    
-    episode.images.each do |image|
-      image.alt
-    end
+    episode.name
+    episode.comments
+    episode.year
+    episode.subtitle
+    episode.pubdate
+    episode.explicit
+    episode.keywords (Array)
+    episode.media_file_name
+    episode.media_path
+    episode.duration.seconds
+    episode.duration.human
+    episode.size.bytes
+    episode.size.kb
+    episode.size.mb
+    episode.size.gb
+    episode.size.human
     
     feed.title
-    feed.keywords.join(', ')
+    feed.keywords (Array)
     
     feed.series.each do |series|
       series.name

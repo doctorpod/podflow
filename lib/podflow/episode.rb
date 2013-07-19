@@ -2,6 +2,8 @@ require 'podflow/series'
 require 'podflow/pod_utils'
 require 'podflow/image'
 require 'podflow/tag_mp3'
+require 'podflow/duration'
+require 'podflow/size'
 
 module Podflow
   class Episode < FormattedConfigFile
@@ -32,6 +34,14 @@ module Podflow
     
     def media_path
       PodUtils::find_file!(media_file_name, MEDIA_SEARCH_PATHS)
+    end
+    
+    def duration
+      @duration ||= Duration.new(Mp3Info.open(media_path).length.round)
+    end
+    
+    def size
+      @size ||= Size.new(File.size(media_path))
     end
     
     def read_tags(path = media_path)
