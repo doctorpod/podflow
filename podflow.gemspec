@@ -21,5 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "mail"
   gem.add_runtime_dependency('taglib-ruby', '>= 0.1.1')
   gem.add_runtime_dependency('ruby-mp3info', '>= 0.6.13')
+  gem.add_runtime_dependency('httparty')
   gem.add_development_dependency "rspec"
 end

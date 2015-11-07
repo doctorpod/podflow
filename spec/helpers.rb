@@ -1,3 +1,5 @@
+require_relative "../lib/podflow"
+
 def samples(*path_components)
   generate_path('samples', *path_components)
 end
@@ -46,18 +48,18 @@ module Podflow
     def to_yaml
       'fake series'
     end
-    
+
     def render_views(binding)
       ['fake view 1', 'fake view 2']
     end
   end
-  
+
   class FakeEpisode
     attr_reader :number
-    
+
     def read_mp3
     end
-    
+
     def to_yaml
       'fake episode'
     end

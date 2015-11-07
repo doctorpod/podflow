@@ -20,7 +20,7 @@ views:
 - name: MyView
   template: MyTemplateFile
 
-informs:
+email:
 - subject: |
     MySubject
 
@@ -31,5 +31,12 @@ informs:
   recipient_salutation: TheirName
   from: me@from.com
   from_salutation: MyName
-  template: MyInformTemplateFile
+  template: MyEmailTemplateFile
+
+
+slack:
+- url: https://hooks.slack.com/services/SET/THIS
+  username: Andy
+  channel: "@andy"
+  template: MySlackTemplateFile
 

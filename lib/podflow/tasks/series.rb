@@ -35,12 +35,17 @@ end
 
 task :upload => ['upload:episode', 'upload:images']
 
-desc 'Generate inform messages for epsiode'
-task :inform do
-  Episode.highest_or_matching(ENV['NAME']).inform
+desc 'Generate email messages for epsiode'
+task :email do
+  Episode.highest_or_matching(ENV['NAME']).email
 end
 
-desc 'Tag, generate views, upload and generate inform messages for episode'
-task :deploy => [:tag, :views, :upload, :inform]
+desc 'Generate slack messages for epsiode'
+task :slack do
+  Episode.highest_or_matching(ENV['NAME']).slack
+end
+
+desc 'Tag, generate views, upload and generate messages for episode'
+task :deploy => [:tag, :views, :upload, :email, :slack]
 
 task :default => :deploy

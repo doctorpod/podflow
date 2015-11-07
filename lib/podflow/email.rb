@@ -1,36 +1,31 @@
 require 'mail'
-require 'podflow/pod_utils'
 
 module Podflow
-  class Inform
+  class Email
     attr_reader :subject, :recipients, :recipient_salutation, :from, :from_salutation, :template,
                 :additional_text
-    
+
     def initialize(data = {})
       @subject              = data['subject'] || 'MySubject'
       @recipients           = data['recipients'] || ['him@here.com', 'her@there.com']
       @recipient_salutation = data['recipient_salutation'] || 'TheirName'
       @from                 = data['from'] || 'me@from.com'
       @from_salutation      = data['from_salutation'] || 'MyName'
-      @template             = data['template'] || 'MyInformTemplateFile'
+      @template             = data['template'] || 'MyEmailTemplateFile'
       @additional_text      = ''
     end
-    
-    def generate_mail(series, episode)
+
+    def send(series, episode)
       mail = Mail.new
       mail.subject = subject.chomp
-      mail.body = ERB.new(PodUtils.local_template_string(template)).result(binding)
+      mail.body = body(series, episode)
       mail.to = recipients
       mail.from = from
-      mail
-    end
-    
-    def perform(series, episode)
-      mail = generate_mail(series, episode)
+
       STDOUT.puts "--\n#{mail}\n--"
       STDOUT.print "Action for mail ([s]end, [i]gnore, set [a]dditional text): "
       answer = STDIN.gets.chomp
-      
+
       case answer
       when "s"
         STDOUT.puts "Sending mail..."
@@ -43,6 +38,12 @@ module Podflow
       else
         STDOUT.puts "Ignoring mail"
       end
+    end
+
+    private
+
+    def body(series, episode)
+      ERB.new(PodUtils.local_template_string(template)).result(binding)
     end
   end
 end

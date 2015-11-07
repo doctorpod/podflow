@@ -24,19 +24,28 @@ views:
   template: <%= view.template %>
 
 <% end %>
-informs:
-<% informs.each do |inform| %>
+email:
+<% email.each do |email| %>
 - subject: |
-    <%= inform.subject %>
+    <%= email.subject %>
 
   recipients:
-<% inform.recipients.each do |recipient| %>
+<% email.recipients.each do |recipient| %>
   - <%= recipient %>
 <% end %>
 
-  recipient_salutation: <%= inform.recipient_salutation %>
-  from: <%= inform.from %>
-  from_salutation: <%= inform.from_salutation %>
-  template: <%= inform.template %>
+  recipient_salutation: <%= email.recipient_salutation %>
+  from: <%= email.from %>
+  from_salutation: <%= email.from_salutation %>
+  template: <%= email.template %>
+
+<% end %>
+
+slack:
+<% slack.each do |slack| %>
+- url: <%= slack_url %>
+  username: <%= slack.username %>
+  channel: "<%= slack.channel %>"
+  template: <%= slack.template %>
 
 <% end %>

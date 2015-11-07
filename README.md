@@ -1,6 +1,6 @@
 # Podflow
 
-Podflow is a suite of Rake tasks to streamline the process of audio podcast tagging, deployment and delivery, and RSS generation and maintenance.
+Podflow is a suite of Rake tasks to streamline the process of audio podcast tagging, deployment and delivery.
 
 ## Installation
 
@@ -28,73 +28,11 @@ The *NUMBER* env variable indicates the episode number. If omitted this is deriv
     $ rake tag [NAME=name]
     $ rake views [NAME=name]
     $ rake upload [NAME=name]
-    $ rake inform [NAME=name]
+    $ rake email [NAME=name]
+    $ rake slack [NAME=name]
 
-These commands perform tag, upload, text generation (view) and inform steps on an episode. The *deploy* task performs all steps in the order specified above. If *NAME* is omitted the highest alphabetically sorted episode file is assumed (searches any folder named *episodes* else the current folder). Which steps are performed are governed by the values set in the *series_config.yml* file.
+These commands perform tag, upload, text generation (view), emailing and slack messaging steps on an episode. The *deploy* task performs all steps in the order specified above. If *NAME* is omitted the highest alphabetically sorted episode file is assumed (searches any folder named *episodes* else the current folder). Which steps are performed are governed by the values set in the *series_config.yml* file.
 
-
-## Generating an RSS feed
-
-    $ feedify
-
-Generates a Rakefile in the current folder which defines the following tasks:
-
-    $ rake config NAME=name
-
-A new feed config file is created in any folder named *config* else the current folder. Existing config files will not be overwritten.
-
-Feed config files have the following format:
-
-    title:
-    author:
-    description:
-    explicit:
-    language:
-    ttl:
-    keywords:
-      - 
-    
-    website:
-    copyright:
-    webmaster:
-    ownername:
-    owneremail:
-    artwork1400:
-    artwork600:
-    artwork300:
-    artwork144:
-    
-    series:
-      - 
-      
-    uploads:
-      - 
-        name:
-        host:
-        path:
-        user:
-        pass:
-    
-    informs:
-      -
-        subject:
-        recipients:
-        from:
-        template:
-
- 
-
-    $ rake generate [NAME=name]
-
-For each config file (.yml) found in any folder named *config*, else the current folder, generates an RSS feed in any folder named *out*, else the current folder. If *NAME* is supplied just generates the feed for correspondingly named .yml file.
-
-    $ rake upload NAME=name
-
-Uploads the named feed file (.xml) from any folder named *out*, else the current folder. NAME must be supplied.
-
-    $ rake inform NAME=name
-
-Sends emails for named feed. NAME must be supplied.
 
 ## Templates
 
@@ -125,14 +63,6 @@ The *template:* values in the *series_config.yml* and episode files should speci
     episode.size.gb
     episode.size.human
     
-    feed.title
-    feed.keywords (Array)
-    
-    feed.series.each do |series|
-      series.name
-      series.description
-    end
-
 
 ## Images
 
