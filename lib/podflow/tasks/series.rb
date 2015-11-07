@@ -1,4 +1,4 @@
-require 'podflow'
+require_relative '../../podflow'
 include Podflow
 
 desc "Generate config file #{Series::CONFIG_NAME}"
