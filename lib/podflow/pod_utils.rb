@@ -60,7 +60,7 @@ module Podflow
     def self.offer_edit(path)
       if editor = ENV["EDITOR"]
         STDOUT.puts "Edit file? (y/n):"
-        answer = STDIN.gets
+        answer = STDIN.gets.chomp
         system "#{editor} #{path}" if %w{ y yes }.include?(answer.downcase)
       end
     end
