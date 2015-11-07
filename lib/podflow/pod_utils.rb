@@ -61,7 +61,7 @@ module Podflow
       if editor = ENV["EDITOR"]
         STDOUT.puts "Edit file? (y/n):"
         answer = STDIN.gets
-        system "#{editor} #{path}" if %w{ y yes }.include(answer.downcase)
+        system "#{editor} #{path}" if %w{ y yes }.include?(answer.downcase)
       end
     end
 
